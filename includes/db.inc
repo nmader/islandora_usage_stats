@@ -32,12 +32,19 @@ function islandora_usage_stats_pid_id($pid) {
 
 /**
  * Gets the database id related to a PID.
+ *
+ * @throws Exception if the $pid cannot be loaded.
  */
 function islandora_usage_stats_pid_to_db($pid) {
   $object = islandora_object_load($pid);
-  return db_insert('islandora_usage_stats_objects')
-    ->fields(array('pid' => $pid, 'label' => $object->label))
-    ->execute();
+  if ($object) {
+    return db_insert('islandora_usage_stats_objects')
+      ->fields(array('pid' => $pid, 'label' => $object->label))
+      ->execute();
+  }
+  else {
+    throw new Exception("Could not load '{$pid}' as Islandora object");
+  }
 }
 
 /**

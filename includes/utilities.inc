@@ -19,19 +19,40 @@ function islandora_usage_stats_log_object_view(AbstractObject $object) {
       module_load_include('inc', 'islandora_usage_stats', 'includes/db');
       $pid_id = islandora_usage_stats_get_pid_id($object->id);
       $object_access_id = islandora_usage_stats_object_view_to_db($pid_id);
+
       // Log content models.
-      $object = islandora_object_load($object->id);
       foreach ($object->models as $model) {
         if ($model != 'fedora-system:FedoraObject-3.0') {
-          $model_id = islandora_usage_stats_get_pid_id($model);
-          islandora_usage_stats_content_model_view_to_db($object_access_id, $model_id);
+          try {
+            $model_id = islandora_usage_stats_get_pid_id($model);
+            islandora_usage_stats_content_model_view_to_db($object_access_id, $model_id);
+          }
+          catch (Exception $e) {
+            watchdog_exception(
+              'islandora_usage_stats',
+              $e,
+              'Attempted load of %cmodel as cmodel of %obj',
+              array('%cmodel' => $model, '%obj' => $object->id),
+              WATCHDOG_ERROR);
+          }
         }
       }
+
       // Log parents.
       $collections = islandora_basic_collection_get_parent_pids($object);
       foreach ($collections as $collection) {
-        $collection_id = islandora_usage_stats_get_pid_id($collection);
-        islandora_usage_stats_collection_view_to_db($object_access_id, $collection_id);
+        try {
+          $collection_id = islandora_usage_stats_get_pid_id($collection);
+          islandora_usage_stats_collection_view_to_db($object_access_id, $collection_id);
+        }
+        catch (Exception $e) {
+          watchdog_exception(
+            'islandora_usage_stats',
+            $e,
+            'Attempted load of %cmodel as parent collection of %obj',
+            array('%cmodel' => $collection, '%obj' => $object->id),
+            WATCHDOG_ERROR);
+        }
       }
       islandora_usage_stats_session_object_last_viewed_time($object->id, REQUEST_TIME);
     }
