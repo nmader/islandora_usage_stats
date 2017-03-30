@@ -465,4 +465,3 @@ function islandora_usage_stats_views_data() {
   );
   return $data;
 }
-
