@@ -73,7 +73,7 @@ function islandora_usage_stats_views_data() {
       'base' => array(
         'field' => 'id',
         'title' => t('Islandora Usage Stats Datastreams'),
-        'help' => t('Datastream information.'),
+        'help' => t('Stores information about DSID and PID. Useful in relation to the datastream downloads data.'),
       ),
     ),
     'id' => array(
@@ -242,8 +242,8 @@ function islandora_usage_stats_views_data() {
       'group' => t('Islandora Usage Stats'),
       'base' => array(
         'field' => 'id',
-        'title' => t('Islandora Usage Stats Object Datastream Access'),
-        'help' => t('The log of Datastreams being visited.'),
+        'title' => t('Islandora Usage Stats Object Datastream Downloads'),
+        'help' => t('Tracks the downloads of datastreams from Islandora objects.'),
       ),
     ),
     'id' => array(
